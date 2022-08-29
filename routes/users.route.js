@@ -17,6 +17,7 @@ router.post('/register',
         .isLength({min:6})    
 ],
 usersController.registerUser)
+
 router.post('/login', usersController.loginUser)
 
 module.exports = router

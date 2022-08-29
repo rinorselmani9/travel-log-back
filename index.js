@@ -4,9 +4,11 @@ const app = express()
 const placesRouter = require('./routes/places.route')
 const usersRouter = require('./routes/users.route')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const url = 'mongodb://localhost:27017/travel'
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 
