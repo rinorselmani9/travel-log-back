@@ -117,6 +117,9 @@ const deletePlace = async (req, res, next) => {
     await place.remove()
     place.creator.places.pull(place)
     await place.creator.save()
+
+    res.json(place.creator.places)
+    
   }catch(err){
     throw new HttpError(err.message)
   }
