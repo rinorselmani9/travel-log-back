@@ -5,46 +5,7 @@ const userModel = require("../models/user.model");
 const mongoose = require("mongoose");
 const user = require("../models/user.model");
 
-const dummy_places = [
-  {
-    id: "p1",
-    title: "Empire State",
-    description: "One of the most famous sky scrapers in the world!",
-    imageUrl:
-      "https://www.history.com/.image/t_share/MTU3ODc4NjA0ODYzOTA3NTUx/image-placeholder-title.jpg",
-    address: "29 w 34th St, New York, NY 10001",
-    location: {
-      lat: 40.74844405,
-      lng: -73.9878584,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Hamburger Aba",
-    description: "One of the most famous burger shops in the world!",
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Hamburger_Aba_Prishtina.jpg/1600px-Hamburger_Aba_Prishtina.jpg?20181001133614",
-    address: "Prishtine, 10000",
-    location: {
-      lat: 42.667542,
-      lng: 21.166191,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p3",
-    title: "New Born",
-    description: "Kosova newest country in the world",
-    imageUrl: "https://pbs.twimg.com/media/EwCNjEQWQAQQMr9.jpg",
-    address: "Pristina",
-    location: {
-      lat: 45.333,
-      lng: -73.09,
-    },
-    creator: "u2",
-  },
-];
+
 const getPlacesById = async (req, res, next) => {
   const placeId = req.params.pid;
 
@@ -61,6 +22,7 @@ const getPlacesByUserId = async (req, res, next) => {
 
   try {
     const result = await placeModel.find({ creator: userId });
+    
     res.json({ result });
   } catch (error) {
     throw new HttpError("Could not find places with given user id", 404);
@@ -138,6 +100,7 @@ const updatePlace = async (req, res, next) => {
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
+
   if (!placeId) {
     throw new HttpError("Could not find a place with this id", 404);
   }
@@ -145,19 +108,17 @@ const deletePlace = async (req, res, next) => {
   let place
 
   try {
-    place = await placeModel.findByIdAndDelete(placeId).populate('creator')
-    res.json(place);
-  } catch (error) {
-    throw new HttpError(error.message);
+    place = await placeModel.findById(placeId).populate('creator')
+  } catch (err) {
+    throw new HttpError(err.message);
   }
 
   try{
-    place.remove()
+    await place.remove()
     place.creator.places.pull(place)
-    place.creator.save()
-
-  }catch(error){
-    throw new HttpError(error.message)
+    await place.creator.save()
+  }catch(err){
+    throw new HttpError(err.message)
   }
 };
 

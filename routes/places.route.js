@@ -4,7 +4,7 @@ const placesController = require('../controllers/places.controller')
 const { check } = require('express-validator')
 
 router.get('/:pid',placesController.getPlacesById)
-router.get('/userPlaces/:uid',placesController.getPlacesByUserId)
+router.get('/:uid/places',placesController.getPlacesByUserId)
 
 
 router.post('/add-places',

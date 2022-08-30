@@ -13,12 +13,15 @@ const userData = [
 ]   
 
 const getUsers = async(req,res,next) => {
+    let result
     try {
-        const result = await  userModel.find()
-        res.json({result})
+        result = await  userModel.find({},'-password')
+        
+      
     } catch (error) {
         throw new HttpError(error.message)
     }
+    res.json({result:result.map(users => users.toObject({getters:true}))})
 }
 
 const registerUser = async(req,res,next) => {
@@ -59,7 +62,8 @@ const loginUser  = async (req,res,next) => {
         return next(new HttpError('Invalid credentials',401))
     }
 
-    res.json({message:'Logged in!'})
+    res.json({message:'Logged in!',
+    user:existUser.toObject({getters:true})})
 
 }
 exports.getUsers = getUsers
